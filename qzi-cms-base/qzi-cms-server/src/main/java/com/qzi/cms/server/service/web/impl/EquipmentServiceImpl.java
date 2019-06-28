@@ -107,11 +107,16 @@ public class EquipmentServiceImpl implements EquipmentService {
 	@Transactional(rollbackFor=Exception.class)
 	public void add(UseEquipmentVo equipmentVo) throws Exception {
 		//保存设备信息
+		equipmentVo.setEquipmentType("10");
+		
 		UseEquipmentPo equipmentPo = YBBeanUtils.copyProperties(equipmentVo, UseEquipmentPo.class);
 		String equIe = ToolUtils.getUUID();
 		equipmentPo.setId(equIe);
 		equipmentPo.setCreateTime(new Date());
-		equipmentPo.setEquipmentId(generatorEquId(equipmentVo));
+		equipmentPo.setEquipmentId(equIe);
+		equipmentPo.setEquId(equIe);
+
+
 		if(!EquipmentEnum.UNIT.getCode().equals(equipmentVo.getEquipmentType())){
 			equipmentPo.setBuildingId(null);
 			equipmentPo.setUnitName(null);
@@ -123,54 +128,12 @@ public class EquipmentServiceImpl implements EquipmentService {
 
 		UseCommunityPo compo =   communityMapper.findOne(equipmentVo.getCommunityId());
 
-		//设置围墙机的数据
-		if("20".equals(equipmentPo.getEquipmentType())){
-			List<UseRoomCardPo> cardList =  useRoomCardMapper.findCommunityId(equipmentPo.getCommunityId());
-			if(cardList.size()>0){
-				UseCardEquipmentPo equpo = new UseCardEquipmentPo();
-				for(UseRoomCardPo po2:cardList){
-
-					equpo.setId(ToolUtils.getUUID());
-					equpo.setRoomId(po2.getRoomId());
-					equpo.setCardId(po2.getId());
-					equpo.setEquipmentId(equIe);
-					equpo.setCreateTime(new Date());
-					equpo.setState("20");
-					equpo.setEquId(equipmentPo.getEquId());
-					useCardEquipmentMapper.insert(equpo);
-				}
-			}
-
-		//设置单元机的数据
-		}else if("30".equals(equipmentPo.getEquipmentType())){
-			SysUnitVo sysUnitVo =  useUnitMapper.findAllUnit(equipmentPo.getBuildingId(),String.format("%02d",equipmentPo.getUnitName()));
-			if(sysUnitVo!=null){
-
-				List<UseRoomCardPo> list = useRoomCardMapper.findUnitId(sysUnitVo.getId());
-				if(list.size()>0){
-					UseCardEquipmentPo equpo = new UseCardEquipmentPo();
-					for(UseRoomCardPo po1:list){
-						equpo.setId(ToolUtils.getUUID());
-						equpo.setRoomId(po1.getRoomId());
-						equpo.setCardId(po1.getId());
-						equpo.setEquipmentId(equIe);
-						equpo.setCreateTime(new Date());
-						equpo.setState("20");
-						equpo.setEquId(equipmentPo.getEquId());
-						useCardEquipmentMapper.insert(equpo);
-
-					}
-				}
 
 
 
-			}
-		}
-
-
-
-
-		equipmentPo.setEquNo(compo.getCommunityNo()+equipmentVo.getEquNo());
+		equipmentPo.setEquNo(equipmentVo.getEquNo());
+		equipmentPo.setEquCode(equipmentVo.getEquNo());
+		equipmentPo.setState("10");
 		equipmentMapper.insert(equipmentPo);
 
 		UseEquipmentNowStatePo nowStatePo  = new UseEquipmentNowStatePo();
@@ -182,7 +145,7 @@ public class EquipmentServiceImpl implements EquipmentService {
 		//初始化设备的状态
 		nowStatePo.setId(ToolUtils.getUUID());
 		nowStatePo.setEquipmentId(equIe);
-		nowStatePo.setEquipmentNo(compo.getCommunityNo()+equipmentVo.getEquNo());
+		nowStatePo.setEquipmentNo(equipmentVo.getEquNo());
 		nowStatePo.setState("20");
 		nowStatePo.setUpdateTime(new Date());
 		useEquipmentNowStateMapper.insert(nowStatePo);
@@ -193,7 +156,7 @@ public class EquipmentServiceImpl implements EquipmentService {
 		portPo.setId(ToolUtils.getUUID());
 		portPo.setCreateTime(new Date());
 		portPo.setEquipmentId(equIe);
-		portPo.setEquipmentNo(compo.getCommunityNo()+equipmentVo.getEquNo());
+		portPo.setEquipmentNo(equipmentVo.getEquNo());
 		portPo.setIps("0.0.0.0");
 		portPo.setPort("8000");
 		useEquipmentPortMapper.insert(portPo);

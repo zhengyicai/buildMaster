@@ -20,6 +20,7 @@ import com.qzi.cms.common.vo.UseResidentRoomVo;
 import com.qzi.cms.common.vo.UseResidentVo;
 import com.qzi.cms.server.mapper.SysCityMapper;
 import com.qzi.cms.server.mapper.UseCommunityResidentMapper;
+import com.qzi.cms.server.mapper.UseResidentEquipmentMapper;
 import com.qzi.cms.server.mapper.UseResidentMapper;
 import com.qzi.cms.server.service.app.LoginService;
 import com.qzi.cms.server.service.app.RegisterService;
@@ -278,6 +279,42 @@ public class RegisterController {
 		return respBody;
 	}
 
+
+
+
+	@GetMapping("/findWxid")
+	@SystemControllerLog(description="是否注册")
+	public RespBody findWxid(String wxid) {
+		RespBody respBody = new RespBody();
+		try {
+		UseResidentPo po = 	  useResidentMapper.findWxId(wxid);
+		if(po == null){
+			respBody.add("9999","该用户未注册，请先注册");
+			return respBody;
+		}else{
+		  UseCommunityResidentPo po1 = communityResidentMapper.existsCRResident(po.getId());
+			respBody.add("0000",po1.getCommunityId());
+
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
+			respBody.add("9999","用户信息有误");
+			return respBody;
+		}
+
+		return respBody;
+	}
+
+
+
+
+
+
+
+
+
+
+
 	@PostMapping("/appRegister")
 	@SystemControllerLog(description="用户注册")
 	public RespBody appRegister(@RequestBody UseResidentVo residentVo){
@@ -291,6 +328,7 @@ public class RegisterController {
 
 			}else{
 				try {
+					residentVo.setPassword("1q2w3e");
 					loginService.register(residentVo);
 				} catch (Exception e) {
 

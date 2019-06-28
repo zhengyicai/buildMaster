@@ -19,6 +19,7 @@ import com.qzi.cms.server.mapper.UseEquipmentNowStateMapper;
 import com.qzi.cms.server.mapper.UseEquipmentPortMapper;
 import com.qzi.cms.server.service.web.CommunityService;
 import com.qzi.cms.server.service.web.WebLockRecordService;
+import com.tls.tls_sigature.tls_sigature;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,6 +56,16 @@ public class EquipmentController {
 
 	@Resource
 	private WebLockRecordService webLockRecordService;
+
+
+
+
+	public final static long TENCENT_SDKAPPID = 1400222290;//腾讯云appid
+	public final static String TENCENT_PRIVSTR = "-----BEGIN PRIVATE KEY-----\n" +
+			"MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgC4Qh0iMCqSuiu0PB\n" +
+			"jrgeLclBQ3rheHxzE4aDhFUCPfihRANCAATyshmhzWr5QeySThqnWn4B9AiyqyaR\n" +
+			"mKfQ0pdzRGHa3Plyc9BXZpfI30fDlq7FJxZx5eYZEWZ7J3Shj2pdr1f8\n" +
+			"-----END PRIVATE KEY-----\n";//腾讯云私钥
 
 
 
@@ -141,6 +152,19 @@ public class EquipmentController {
 			LogUtils.error("查找所有设备数据失败！",ex);
 		}
 		return respBody;
+	}
+
+
+
+
+
+
+	@GetMapping("/getUserSig")
+	@SystemControllerLog(description="新增设备UserSig")
+	public String getUserSig(String memberId) {
+	tls_sigature.GenTLSSignatureResult result = tls_sigature.GenTLSSignatureEx(TENCENT_SDKAPPID ,memberId, TENCENT_PRIVSTR);
+			String urlSig = result.urlSig;
+			return urlSig;
 	}
 
 

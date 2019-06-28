@@ -113,7 +113,7 @@ public class WxController {
         String url ="https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +appid+
                 "&redirect_uri=" + URLEncoder.encode(backUrl,"UTF-8")+
                 "&response_type=code" +
-                "&scope=snsapi_base" +
+                "&scope=snsapi_userinfo" +
                 "&state=STATE#wechat_redirect";
         response.sendRedirect(url);
         // return  url;

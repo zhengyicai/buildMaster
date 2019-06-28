@@ -3,7 +3,9 @@ package com.qzi.cms.app.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonParser;
+import com.qzi.cms.common.annotation.SystemControllerLog;
 import com.qzi.cms.common.enums.RespCodeEnum;
+import com.qzi.cms.common.exception.CommException;
 import com.qzi.cms.common.po.*;
 import com.qzi.cms.common.resp.RespBody;
 import com.qzi.cms.common.service.RedisService;
@@ -16,6 +18,7 @@ import com.qzi.cms.common.vo.UseEquipmentNowStateVo;
 import com.qzi.cms.common.vo.UseEquipmentVo;
 import com.qzi.cms.common.vo.UseResidentVo;
 import com.qzi.cms.server.mapper.*;
+import com.qzi.cms.server.service.web.EquipmentService;
 import com.qzi.cms.server.service.web.ResidentService;
 import org.omg.PortableInterceptor.SUCCESSFUL;
 import org.springframework.web.bind.annotation.*;
@@ -95,6 +98,9 @@ public class EquipmentController {
 
 
     public  DatagramSocket  socket = null;
+
+    @Resource
+    private EquipmentService equipmentService;
 
 
 
@@ -850,6 +856,37 @@ public class EquipmentController {
         respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有住户房卡数据成功", relist);
         return respBody;
     }
+
+
+
+    @PostMapping("/add")
+    	@SystemControllerLog(description="新增设备信息")
+    	public RespBody add(@RequestBody UseEquipmentVo equipmentVo){
+    		RespBody respBody = new RespBody();
+    		try {
+
+
+
+
+    			equipmentService.add(equipmentVo);
+
+
+
+
+
+
+
+
+    			respBody.add(RespCodeEnum.SUCCESS.getCode(), "设备数据保存成功");
+    		} catch (CommException ex) {
+    			respBody.add(RespCodeEnum.ERROR.getCode(), "云之讯调用异常");
+    			LogUtils.error("云之讯调用异常！",ex);
+    		} catch (Exception ex) {
+    			respBody.add(RespCodeEnum.ERROR.getCode(), "设备据保存失败");
+    			LogUtils.error("设备据保存失败！",ex);
+    		}
+    		return respBody;
+    	}
 
 
 

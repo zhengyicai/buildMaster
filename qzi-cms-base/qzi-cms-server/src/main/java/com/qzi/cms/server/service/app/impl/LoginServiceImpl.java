@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 
 import com.qzi.cms.common.enums.RespCodeEnum;
 import com.qzi.cms.common.enums.StateEnum;
+import com.qzi.cms.common.po.UseCommunityResidentPo;
 import com.qzi.cms.common.resp.RespBody;
 import com.qzi.cms.common.util.YBBeanUtils;
 import com.qzi.cms.common.vo.SysUserVo;
@@ -195,15 +196,22 @@ public class LoginServiceImpl implements LoginService {
 		}
 
 		UseResidentPo residentPo = YBBeanUtils.copyProperties(residentVo, UseResidentPo.class);
-		residentPo.setId(ToolUtils.getUUID());
+		String userId =  ToolUtils.getUUID();
+		residentPo.setId(userId);
 		String salt = ToolUtils.getUUID();
 		residentPo.setSalt(salt);
 		String loginPw = CryptUtils.hmacSHA1Encrypt(residentVo.getPassword(), salt);
 		residentPo.setPassword(loginPw);
 		residentPo.setCreateTime(new Date());
 		residentPo.setState("10");
-
 		residentMapper.insert(residentPo);
+
+
+		UseCommunityResidentPo  po = new UseCommunityResidentPo();
+		po.setCommunityId(residentVo.getCommunityId());
+		po.setResidentId(userId);
+		po.setState("10");
+		useCommunityResidentMapper.insert(po);
 
 
 	}
