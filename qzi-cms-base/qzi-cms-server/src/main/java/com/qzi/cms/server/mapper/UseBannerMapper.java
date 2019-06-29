@@ -9,6 +9,7 @@ package com.qzi.cms.server.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.session.RowBounds;
 
@@ -42,5 +43,12 @@ public interface UseBannerMapper extends BaseMapper<UseBannerPo>{
 	 */
 	@Select("SELECT img from use_banner where state='10' order by bannerIdx")
 	public List<String> findBanners();
+
+
+	@Select("SELECT * from use_banner where state = '10' and communityId = #{communityId} ")
+	public List<UseBannerPo> findBannerslist(@Param("communityId") String communityId);
+
+
+
 	
 }

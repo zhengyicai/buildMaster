@@ -759,8 +759,8 @@ public class UserController {
 
 
 
-//	@GetMapping("/testUdp")
-//	public RespBody testUdp() throws  Exception{
+//	@GetMapping("/")
+//	public RespBody () throws  Exception{
 //		RespBody respBody = new RespBody();
 //		byte[] bs = "我是A,给B发信息".getBytes();//要发的信息内容
 //		//UDPA与UDPB的ip均为本机ip，故设置不同的端口号

@@ -44,6 +44,45 @@ public class UseBannerVo {
 	 * 创建时间
 	 */
 	private Date createTime;
+
+
+	private Integer startCount;
+	private Integer stopCount;
+	private Date stopTime;
+	private String communityId;
+
+	public String getCommunityId() {
+		return communityId;
+	}
+
+	public void setCommunityId(String communityId) {
+		this.communityId = communityId;
+	}
+
+	public Integer getStartCount() {
+		return startCount;
+	}
+
+	public void setStartCount(Integer startCount) {
+		this.startCount = startCount;
+	}
+
+	public Integer getStopCount() {
+		return stopCount;
+	}
+
+	public void setStopCount(Integer stopCount) {
+		this.stopCount = stopCount;
+	}
+
+	public Date getStopTime() {
+		return stopTime;
+	}
+
+	public void setStopTime(Date stopTime) {
+		this.stopTime = stopTime;
+	}
+
 	/**
 	 * @return the id
 	 */

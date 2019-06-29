@@ -41,11 +41,11 @@ public class WxController {
     @Resource
     private UseCommunityMapper useCommunityMapper;
 
-    private String appid = "wx23bfac0f706f04ac";
-    private String appsecret = "098f8f3795cc7d4c2e51ecc95bf88b41";
-    private String url = "http://weixin.zhcloudshare.com"; //回调接口
-    private String pageUrl = "http://www.zhcloudshare.com/menzha/home.html";  //返回页面
-    private String authPageUrl = "http://www.zhcloudshare.com/menzha/userAdd.html";  //访客授权页面
+    private String appid = "wx7e2cbe88acd91b11";
+    private String appsecret = "addb33ee9e17d40c22586c44d034d78a";
+    private String url = "http://youmo.zhcloudshare.com"; //回调接口
+    private String pageUrl = "http://youmo.zhcloudshare.com/menzha/userAdd.html";  //返回页面
+    private String authPageUrl = "http://youmo.zhcloudshare.com/menzha/equipmentList.html";  //访客授权页面
 
 
     @RequestMapping("loginInit.do")
@@ -113,7 +113,7 @@ public class WxController {
         String url ="https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +appid+
                 "&redirect_uri=" + URLEncoder.encode(backUrl,"UTF-8")+
                 "&response_type=code" +
-                "&scope=snsapi_userinfo" +
+                "&scope=snsapi_base" +
                 "&state=STATE#wechat_redirect";
         response.sendRedirect(url);
         // return  url;

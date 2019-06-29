@@ -138,5 +138,10 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.49</version>
 		</dependency>
-	</dependencies>
+		<dependency>
+			<groupId>com.github.tencentyun</groupId>
+			<artifactId>tls-sig-api</artifactId>
+			<version>1.2</version>
+		</dependency>
+    </dependencies>
 </project>

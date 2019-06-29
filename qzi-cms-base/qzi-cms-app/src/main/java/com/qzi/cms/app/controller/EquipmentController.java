@@ -20,6 +20,7 @@ import com.qzi.cms.common.vo.UseResidentVo;
 import com.qzi.cms.server.mapper.*;
 import com.qzi.cms.server.service.web.EquipmentService;
 import com.qzi.cms.server.service.web.ResidentService;
+import com.tls.tls_sigature.tls_sigature;
 import org.omg.PortableInterceptor.SUCCESSFUL;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.ContextLoader;
@@ -56,6 +57,13 @@ public class EquipmentController {
     private UseRoomCardMapper useRoomCardMapper;
     @Resource
     private UseEquipmentMapper useEquipmentMapper;
+
+    @Resource
+    private UseCommunityMapper useCommunityMapper;
+
+    @Resource
+    private UseBannerMapper useBannerMapper;
+
 
     @Resource
     private UseCardEquipmentMapper useCardEquipmentMapper;
@@ -109,6 +117,15 @@ public class EquipmentController {
     private String imagepath = "/data/page/uploadImages/";
     private   String appid = "wx23bfac0f706f04ac";
     private   String appsecret = "098f8f3795cc7d4c2e51ecc95bf88b41";
+
+
+
+    public final static long TENCENT_SDKAPPID = 1400222290;//腾讯云appid
+    public final static String TENCENT_PRIVSTR = "-----BEGIN PRIVATE KEY-----\n" +
+            "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgC4Qh0iMCqSuiu0PB\n" +
+            "jrgeLclBQ3rheHxzE4aDhFUCPfihRANCAATyshmhzWr5QeySThqnWn4B9AiyqyaR\n" +
+            "mKfQ0pdzRGHa3Plyc9BXZpfI30fDlq7FJxZx5eYZEWZ7J3Shj2pdr1f8\n" +
+            "-----END PRIVATE KEY-----\n";//腾讯云私钥
 
 
     /**
@@ -657,7 +674,7 @@ public class EquipmentController {
                     DatagramPacket datagramPacket = new DatagramPacket(buf, buf.length); // 1024
                         //调用udp的服务接收数据
                         socket.receive(datagramPacket); //receive是一个阻塞型的方法，没有接收到数据包之前会一直等待。 数据实际上就是存储到了byte的自己数组中了。
-                        System.out.println("接收端接收到的数据："+ new String(buf,0,datagramPacket.getLength())); // getLength() 获取数据包存储了几个字节。
+                        System.out.println("接收端接收到的数据："+ new String(buf,0,datagramPacket.getLength(),"gbk")); // getLength() 获取数据包存储了几个字节。
                         System.out.println("接收端接收到的数据："+datagramPacket.getData()); // getLength() 获取数据包存储了几个字节。
                         System.out.println("receive阻塞了我，哈哈"+datagramPacket.getAddress()+":"+datagramPacket.getPort());
 
@@ -859,6 +876,48 @@ public class EquipmentController {
 
 
 
+    @GetMapping("/getCommunitys")
+    public RespBody getCommunitys(){
+        RespBody respBody = new RespBody();
+
+
+        respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找小区数据成功", useCommunityMapper.FindAllList());
+        return respBody;
+    }
+
+    @GetMapping("/getCommunityList")
+    public RespBody getCommunityList(String communityId){
+        RespBody respBody = new RespBody();
+
+
+        respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找小区数据成功", useEquipmentMapper.findCommunity(communityId));
+        return respBody;
+    }
+
+
+    @GetMapping("/getBannerList")
+    public RespBody getBannerList(String communityId){
+        RespBody respBody = new RespBody();
+
+
+        respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找小区数据成功", useBannerMapper.findBannerslist(communityId));
+        return respBody;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @PostMapping("/add")
     	@SystemControllerLog(description="新增设备信息")
     	public RespBody add(@RequestBody UseEquipmentVo equipmentVo){
@@ -869,15 +928,10 @@ public class EquipmentController {
 
 
     			equipmentService.add(equipmentVo);
+                tls_sigature.GenTLSSignatureResult result = tls_sigature.GenTLSSignatureEx(TENCENT_SDKAPPID ,equipmentVo.getEquNo(), TENCENT_PRIVSTR);
+                String urlSig = result.urlSig;
 
-
-
-
-
-
-
-
-    			respBody.add(RespCodeEnum.SUCCESS.getCode(), "设备数据保存成功");
+    			respBody.add(RespCodeEnum.SUCCESS.getCode(),"注册成功", urlSig);
     		} catch (CommException ex) {
     			respBody.add(RespCodeEnum.ERROR.getCode(), "云之讯调用异常");
     			LogUtils.error("云之讯调用异常！",ex);
@@ -887,6 +941,8 @@ public class EquipmentController {
     		}
     		return respBody;
     	}
+
+
 
 
 
