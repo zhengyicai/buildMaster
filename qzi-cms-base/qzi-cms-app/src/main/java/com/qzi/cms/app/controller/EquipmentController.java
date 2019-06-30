@@ -18,6 +18,7 @@ import com.qzi.cms.common.vo.UseEquipmentNowStateVo;
 import com.qzi.cms.common.vo.UseEquipmentVo;
 import com.qzi.cms.common.vo.UseResidentVo;
 import com.qzi.cms.server.mapper.*;
+import com.qzi.cms.server.service.app.UseCommunityResidentService;
 import com.qzi.cms.server.service.web.EquipmentService;
 import com.qzi.cms.server.service.web.ResidentService;
 import com.tls.tls_sigature.tls_sigature;
@@ -115,8 +116,8 @@ public class EquipmentController {
 
 
     private String imagepath = "/data/page/uploadImages/";
-    private   String appid = "wx23bfac0f706f04ac";
-    private   String appsecret = "098f8f3795cc7d4c2e51ecc95bf88b41";
+    private   String appid = "wx7e2cbe88acd91b11";
+    private   String appsecret = "addb33ee9e17d40c22586c44d034d78a";
 
 
 
@@ -598,6 +599,11 @@ public class EquipmentController {
 
 
 
+
+
+
+
+
     @PostMapping("/sentWeixinNews")
     public RespBody sentWeixinNews(@RequestBody WxObjectVo vo) throws Exception {
         RespBody respBody = new RespBody();
@@ -768,6 +774,17 @@ public class EquipmentController {
 
 
 
+    @GetMapping("/getRedis")
+       public RespBody getRedis(){
+           RespBody respBody = new RespBody();
+           redisService.putString("00000301","dfdf,正文,温度,水压,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1" , 7000).equalsIgnoreCase("ok");
+
+           return respBody;
+       }
+
+
+
+
     //获取设备是否需要同步数据(弃用)
     @GetMapping("/sentUnlock")
     public RespBody sentUnlock() throws  Exception{
@@ -886,13 +903,68 @@ public class EquipmentController {
     }
 
     @GetMapping("/getCommunityList")
-    public RespBody getCommunityList(String communityId){
+    public RespBody getCommunityList(String wxId){
         RespBody respBody = new RespBody();
 
+        UseResidentPo po =   useResidentMapper.findWxId(wxId);
+        if(po!=null){
+           UseCommunityResidentPo useCommunityResidentPo =    useCommunityResidentMapper.existsCRResident(po.getId());
+           if(useCommunityResidentPo!=null){
+               respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找小区数据成功", useEquipmentMapper.findCommunity(useCommunityResidentPo.getCommunityId()));
+           }
+        }
 
-        respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找小区数据成功", useEquipmentMapper.findCommunity(communityId));
         return respBody;
     }
+
+
+     @PostMapping("/saveCommunityList")
+     public RespBody saveCommunityList(@RequestBody UseEquipmentVo equipmentVo){
+            RespBody respBody = new RespBody();
+
+
+            String userId = "";
+
+            UseResidentPo useEquipmentPo =   useResidentMapper.findWxId(equipmentVo.getId());
+            userId = useEquipmentPo.getId();
+
+
+
+            if(equipmentVo.getEquipments().size()>0){
+                useResidentEquipmentMapper.deleteResident1(userId);
+            }
+
+
+            for(int i=0;i<equipmentVo.getEquipments().size();i++){
+
+                UseResidentEquipmentPo po1 = new UseResidentEquipmentPo();
+                po1.setId(ToolUtils.getUUID());
+                po1.setResidentId(userId);
+                po1.setCommunityId(equipmentVo.getCommunityId());
+                po1.setEquipmentId(equipmentVo.getEquipments().get(i));
+                po1.setState("30");
+                
+                useResidentEquipmentMapper.insert(po1);
+            }
+
+
+            return respBody;
+        }
+
+    @GetMapping("/getCommunityListSelect")
+      public RespBody getCommunityListSelect(String wxId){
+          RespBody respBody = new RespBody();
+        UseResidentPo po =   useResidentMapper.findWxId(wxId);
+          if(po!=null){
+              respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找用户设备数据成功",  useResidentEquipmentMapper.selectResidnet(po.getId()));
+
+          }else{
+              respBody.add(RespCodeEnum.ERROR.getCode(), "查找用户设备数据失败");
+          }
+          return respBody;
+      }
+
+
 
 
     @GetMapping("/getBannerList")
@@ -927,7 +999,19 @@ public class EquipmentController {
 
 
 
-    			equipmentService.add(equipmentVo);
+
+
+    	        UseEquipmentPo po = useEquipmentMapper.findEquNo(equipmentVo.getEquNo());
+    	        if(po!=null){
+
+                    tls_sigature.GenTLSSignatureResult result = tls_sigature.GenTLSSignatureEx(TENCENT_SDKAPPID ,po.getEquNo(), TENCENT_PRIVSTR);
+                     String urlSig = result.urlSig;
+
+                    respBody.add(RespCodeEnum.SUCCESS.getCode(),"该设备已注册", urlSig);
+                    return respBody;
+                }
+
+                equipmentService.add(equipmentVo);
                 tls_sigature.GenTLSSignatureResult result = tls_sigature.GenTLSSignatureEx(TENCENT_SDKAPPID ,equipmentVo.getEquNo(), TENCENT_PRIVSTR);
                 String urlSig = result.urlSig;
 

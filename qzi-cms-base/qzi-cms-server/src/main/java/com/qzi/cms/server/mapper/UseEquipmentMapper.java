@@ -140,8 +140,11 @@ public interface UseEquipmentMapper extends BaseMapper<UseEquipmentPo>{
 	public List<UseEquipmentPo> findUseEquipmentNo1(@Param("equipmentId") String equipmentId);
 
 
-	@Select("SELECT * from use_equipment where equipmentId = #{communityId} where state = '10'")
+	@Select("SELECT * from use_equipment where communityId = #{communityId} and state = '10'")
 	public List<UseEquipmentPo> findCommunity(@Param("communityId") String communityId);
+
+	@Select("SELECT * from use_equipment where equNo = #{equNo} and state = '10' limit 1")
+	public UseEquipmentPo findEquNo(@Param("equNo") String equNo);
 
 
 

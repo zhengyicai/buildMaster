@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPObject;
 import com.qzi.cms.common.enums.RespCodeEnum;
 import com.qzi.cms.common.resp.RespBody;
+import com.qzi.cms.common.service.RedisService;
 import com.qzi.cms.common.util.HttpClientManager;
 
 
@@ -43,15 +44,24 @@ public class WxController {
 
     private String appid = "wx7e2cbe88acd91b11";
     private String appsecret = "addb33ee9e17d40c22586c44d034d78a";
-    private String url = "http://youmo.zhcloudshare.com"; //回调接口
+    private String url = "http://youmowx.zhcloudshare.com"; //回调接口
     private String pageUrl = "http://youmo.zhcloudshare.com/menzha/userAdd.html";  //返回页面
     private String authPageUrl = "http://youmo.zhcloudshare.com/menzha/equipmentList.html";  //访客授权页面
+
+
+    @Resource
+       private RedisService redisService; 
 
 
     @RequestMapping("loginInit.do")
     public void  loginInit(HttpServletRequest request, HttpServletResponse response)  throws  Exception {
         //回调地址,要跟下面的地址能调通(getWechatGZAccessToken.do)
         String backUrl=url+"/app/wx/getWechatGZAccessToken.do";
+
+
+
+
+
 
 
 
@@ -62,7 +72,7 @@ public class WxController {
         String url ="https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +appid+
                 "&redirect_uri=" + URLEncoder.encode(backUrl,"UTF-8")+
                 "&response_type=code" +
-                "&scope=snsapi_base" +
+                "&scope=snsapi_userinfo" +
                 "&state=STATE#wechat_redirect";
             response.sendRedirect(url);
        // return  url;
@@ -83,12 +93,38 @@ public class WxController {
 
         Map<String,Object> data = JSONObject.parseObject(result);
         String openid=data.get("openid").toString();
+        //String unionId=data.get("unionId").toString();
+
+
+
         String token=data.get("access_token").toString();
+
+      //  String result1 = HttpClientManager.getUrlData("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+appid+"&secret="+appsecret);
+        //Map<String,Object> data1 = JSONObject.parseObject(result1);
+        //System.out.println("result+++++++++++++++++++++++++++++++++++++++++++"+result1);
+        String token1=redisService.getString("access_token");
+        System.out.println("token1+++++++++++++++++++++++++++++++++++++++++++"+token1);
+
+        
+
         //获取信息
-        String infoUrl="https://api.weixin.qq.com/sns/userinfo?access_token=" +token+
+        String infoUrl="https://api.weixin.qq.com/cgi-bin/user/info?access_token=" +token1+
                 "&openid=" +openid+
                 "&lang=zh_CN";
+
+
+//                           https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
+//        				url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + access_token + "&openid=" + open_id
+//        						+ "&lang=zh_CN";
+
+
         String infoResult = HttpClientManager.getUrlData(infoUrl);
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++"+infoResult);
+
+        Map<String,Object> data2 = JSONObject.parseObject(infoResult);
+        String openid1=data.get("openid").toString();
+
+
 
         //回调显示页面
         response.sendRedirect(pageUrl+"?openId="+openid);
@@ -113,7 +149,7 @@ public class WxController {
         String url ="https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +appid+
                 "&redirect_uri=" + URLEncoder.encode(backUrl,"UTF-8")+
                 "&response_type=code" +
-                "&scope=snsapi_base" +
+                "&scope=snsapi_userinfo" +
                 "&state=STATE#wechat_redirect";
         response.sendRedirect(url);
         // return  url;
@@ -135,10 +171,15 @@ public class WxController {
         Map<String,Object> data = JSONObject.parseObject(result);
         String openid=data.get("openid").toString();
         String token=data.get("access_token").toString();
-        //获取信息
-        String infoUrl="https://api.weixin.qq.com/sns/userinfo?access_token=" +token+
-                "&openid=" +openid+
-                "&lang=zh_CN";
+        //获取基本信息
+//        String infoUrl="https://api.weixin.qq.com/sns/userinfo?access_token=" +token+
+//                "&openid=" +openid+
+//                "&lang=zh_CN";
+
+
+        String infoUrl="https://api.weixin.qq.com/cgi-bin/user/userinfo?access_token=" +token+
+                       "&openid=" +openid+
+                       "&lang=zh_CN";
         String infoResult = HttpClientManager.getUrlData(infoUrl);
 
         //回调显示页面

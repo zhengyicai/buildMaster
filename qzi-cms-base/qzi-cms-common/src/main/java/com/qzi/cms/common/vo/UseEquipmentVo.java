@@ -134,6 +134,21 @@ public class UseEquipmentVo {
 	private String unlockCount; //用户和设备未绑定状态
 
 	private  Integer  lastTime;
+	/**
+	 * 设备列表
+	 */
+	private List<String> equipments;
+
+
+
+
+	public List<String> getEquipments() {
+		return equipments;
+	}
+
+	public void setEquipments(List<String> equipments) {
+		this.equipments = equipments;
+	}
 
 	public Integer getLastTime() {
 		return lastTime;

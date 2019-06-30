@@ -12,11 +12,13 @@ import javax.annotation.Resource;
 import com.qzi.cms.common.po.UseCommunityPo;
 import com.qzi.cms.common.po.UseEquipmentNowStatePo;
 import com.qzi.cms.common.po.UseEquipmentPortPo;
+import com.qzi.cms.common.po.UseResidentPo;
 import com.qzi.cms.common.util.ToolUtils;
 import com.qzi.cms.common.vo.CommunityAdminVo;
 import com.qzi.cms.common.vo.UseLockRecordVo;
 import com.qzi.cms.server.mapper.UseEquipmentNowStateMapper;
 import com.qzi.cms.server.mapper.UseEquipmentPortMapper;
+import com.qzi.cms.server.mapper.UseResidentMapper;
 import com.qzi.cms.server.service.web.CommunityService;
 import com.qzi.cms.server.service.web.WebLockRecordService;
 import com.tls.tls_sigature.tls_sigature;
@@ -56,6 +58,11 @@ public class EquipmentController {
 
 	@Resource
 	private WebLockRecordService webLockRecordService;
+
+	@Resource
+	private UseResidentMapper useResidentMapper;
+
+
 
 
 
@@ -165,6 +172,23 @@ public class EquipmentController {
 	tls_sigature.GenTLSSignatureResult result = tls_sigature.GenTLSSignatureEx(TENCENT_SDKAPPID ,memberId, TENCENT_PRIVSTR);
 			String urlSig = result.urlSig;
 			return urlSig;
+	}
+
+
+
+	@GetMapping("/getWxId")
+	@SystemControllerLog(description="新增设备UserSig1")
+	public String getWxId(String mobile) {
+
+		UseResidentPo po =  useResidentMapper.findMobile(mobile);
+		if(po!=null){
+			return po.getWxId();
+		}else{
+
+		}
+		return "";
+
+
 	}
 
 
