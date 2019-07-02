@@ -117,6 +117,7 @@ public class EquipmentController {
 
     private String imagepath = "/data/page/uploadImages/";
     private   String appid = "wx7e2cbe88acd91b11";
+    private   String miniappid = "wxedddefb4077ec474";
     private   String appsecret = "addb33ee9e17d40c22586c44d034d78a";
 
 
@@ -525,6 +526,83 @@ public class EquipmentController {
 
 
     /**
+     * 发起通话
+     */
+
+    @GetMapping("/onlineStartPlay")
+    public void onlineStartPlay(UseEquipmentPortPo po) throws  Exception {
+
+        UseEquipmentPortPo  portPo =   useEquipmentPortMapper.findOne(po.getEquipmentNo());
+
+
+        UseResidentVo useResidentVo = new UseResidentVo();
+        useResidentVo.setCmd("startPlay");
+        useResidentVo.setDeviceId(po.getEquipmentId());
+
+        useResidentVo.setEquipmentNo(po.getEquipmentNo());
+
+        byte[] bs = JSON.toJSONString(useResidentVo).getBytes();//要发的信息内容
+
+        InetAddress desIp = InetAddress.getByName(portPo.getIps());
+        DatagramPacket p = new DatagramPacket(bs, bs.length, desIp, Integer.parseInt(portPo.getPort()));
+
+        //创建数据报套接字，UDPA的端口设置为10086
+        //DatagramSocket  = new DatagramSocket(9999);
+
+        if(socket == null){
+            sentPort();
+            return;
+        }
+        //UDPA给UDPB发送数据报
+        socket.send(p);
+
+        System.out.println("发送udp"+desIp+":"+portPo.getPort()+""+p);
+        //关闭socket_A套接字
+        //Thread.sleep(1000);
+        //socket.close();
+
+
+    }
+
+
+    /**
+     * 发起通话
+     */
+
+    @GetMapping("/onlineStopPlay")
+    public void onlineStopPlay(UseEquipmentPortPo po) throws  Exception {
+
+        UseEquipmentPortPo  portPo =   useEquipmentPortMapper.findOne(po.getEquipmentNo());
+
+        UseResidentVo useResidentVo = new UseResidentVo();
+        useResidentVo.setCmd("stopPlay");
+        useResidentVo.setDeviceId(po.getEquipmentId());
+        useResidentVo.setEquipmentNo(po.getEquipmentNo());
+        byte[] bs = JSON.toJSONString(useResidentVo).getBytes();//要发的信息内容
+
+        InetAddress desIp = InetAddress.getByName(portPo.getIps());
+        DatagramPacket p = new DatagramPacket(bs, bs.length, desIp, Integer.parseInt(portPo.getPort()));
+
+        //创建数据报套接字，UDPA的端口设置为10086
+        //DatagramSocket  = new DatagramSocket(9999);
+
+        if(socket == null){
+            sentPort();
+            return;
+        }
+        //UDPA给UDPB发送数据报
+        socket.send(p);
+
+        System.out.println("发送udp"+desIp+":"+portPo.getPort()+""+p);
+        //关闭socket_A套接字
+        //Thread.sleep(1000);
+        //socket.close();
+
+
+    }
+
+
+    /**
      * 获取开锁记录
      */
 
@@ -594,6 +672,38 @@ public class EquipmentController {
         String url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+redisService.getString("access_token");
         System.out.println("test"+ JSON.toJSONString(wx)) ;
         respBody.add(RespCodeEnum.SUCCESS.getCode(), "操作结果", HttpClientManager.postUrlData(url,JSON.toJSONString(wx)));
+        return respBody;
+    }
+
+
+    @PostMapping("/sentMiniText")
+    public RespBody sentMiniText(@RequestBody WxObjectVo vo) throws Exception {
+        RespBody respBody = new RespBody();
+
+        List<UseResidentVo> list =   useResidentEquipmentMapper.findResidentId( vo.getEquNo());
+        if(list.size()>0){
+            for(int i = 0;i<list.size();i++){
+                WxMessage wx = new WxMessage();
+
+                WxContent content = new WxContent();
+                content.setContent("<a data-miniprogram-appid='"+miniappid+"' data-miniprogram-path='pages/webrtc-room/room/room?roomID="+ vo.getEquNo()+"' href='http://www.qq.com'>"+ vo.getEquNo()+"</a>");
+
+                wx.setTouser(list.get(i).getWxId());
+                wx.setMsgtype("text");
+                wx.setText(content);
+
+                String url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+redisService.getString("access_token");
+                System.out.println("test"+ JSON.toJSONString(wx)) ;
+                HttpClientManager.postUrlData(url,JSON.toJSONString(wx));
+            }
+        }
+
+
+
+
+
+
+        respBody.add(RespCodeEnum.SUCCESS.getCode(), "操作结果","ok");
         return respBody;
     }
 

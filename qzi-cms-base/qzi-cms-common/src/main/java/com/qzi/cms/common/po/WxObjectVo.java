@@ -12,6 +12,15 @@ public class WxObjectVo {
     private  String url;
 
     private String description;
+    private String equNo;
+
+    public String getEquNo() {
+        return equNo;
+    }
+
+    public void setEquNo(String equNo) {
+        this.equNo = equNo;
+    }
 
     public String getWxId() {
         return wxId;
