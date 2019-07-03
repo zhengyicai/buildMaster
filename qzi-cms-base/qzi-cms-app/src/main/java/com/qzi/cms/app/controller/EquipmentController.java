@@ -807,6 +807,9 @@ public class EquipmentController {
                         System.out.println("接收端接收到的数据："+datagramPacket.getData()); // getLength() 获取数据包存储了几个字节。
                         System.out.println("receive阻塞了我，哈哈"+datagramPacket.getAddress()+":"+datagramPacket.getPort());
 
+                        //设置数据
+                         String mess =      new String(buf,0,datagramPacket.getLength(),"gbk");
+                         redisService.putString(mess.substring(0,8),mess.substring(8,mess.length()-1) , 7000).equalsIgnoreCase("ok");
 
                         //doData(datagramPacket.getData());
                         //UseEquipmentPortPo portPo = new UseEquipmentPortPo();
@@ -896,14 +899,21 @@ public class EquipmentController {
     }
 
 
-
     @GetMapping("/getRedis")
-       public RespBody getRedis(){
-           RespBody respBody = new RespBody();
-           redisService.putString("00000301","dfdf,正文,温度,水压,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1" , 7000).equalsIgnoreCase("ok");
+   public RespBody getRedis(){
+       RespBody respBody = new RespBody();
+       redisService.putString("00000301","dfdf,正文,温度,水压,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1" , 7000).equalsIgnoreCase("ok");
 
-           return respBody;
-       }
+       return respBody;
+   }
+
+    @GetMapping("/getRedisEqu")
+    public RespBody getRedisEqu(String equNo){
+        RespBody respBody = new RespBody();
+        respBody.add(RespCodeEnum.SUCCESS.getCode(), "获取redis成功",redisService.getString(equNo));
+
+        return respBody;
+    }
 
 
 
@@ -1050,6 +1060,8 @@ public class EquipmentController {
 
             UseResidentPo useEquipmentPo =   useResidentMapper.findWxId(equipmentVo.getId());
             userId = useEquipmentPo.getId();
+
+
 
 
 

@@ -37,13 +37,13 @@ public class BannerController {
 	
 	
 	@GetMapping("/findAll")
-	public RespBody findAll(Paging paging){
+	public RespBody findAll(Paging paging,String communityId){
 		RespBody respBody = new RespBody();
 		try {
 			//保存返回数据
-			respBody.add(RespCodeEnum.SUCCESS.getCode(), "手机广告轮播图查找所有数据成功", bannerService.findAll(paging));
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "手机广告轮播图查找所有数据成功", bannerService.findAll(paging,communityId));
 			//保存分页对象
-			paging.setTotalCount(bannerService.findCount());
+			paging.setTotalCount(bannerService.findCount(communityId));
 			respBody.setPage(paging);
 		} catch (Exception ex) {
 			respBody.add(RespCodeEnum.ERROR.getCode(), "手机广告轮播图查找所有数据失败");

@@ -29,14 +29,14 @@ public interface UseBannerMapper extends BaseMapper<UseBannerPo>{
 	 * @param rwoBounds
 	 * @return
 	 */
-	@Select("SELECT * from use_banner order by bannerIdx")
-	public List<UseBannerVo> findAll(RowBounds rwoBounds);
+	@Select("SELECT * from use_banner where communityId = #{communityId} order by bannerIdx")
+	public List<UseBannerVo> findAll(RowBounds rwoBounds,@Param("communityId") String communityId);
 
 	/**
 	 * @return
 	 */
-	@Select("SELECT count(1) from use_banner")
-	public long findCount();
+	@Select("SELECT count(1) from use_banner where communityId = #{communityId}")
+	public long findCount(@Param("communityId") String communityId);
 
 	/**
 	 * @return

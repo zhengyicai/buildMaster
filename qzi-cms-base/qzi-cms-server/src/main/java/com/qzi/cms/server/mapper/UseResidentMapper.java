@@ -136,6 +136,10 @@ public interface UseResidentMapper  extends BaseMapper<UseResidentPo>{
 	@Select("select * from use_resident where wxId=#{wxId} limit 1")
 	public UseResidentPo findWxId(@Param("wxId") String wxId);
 
+	@Select("select * from use_resident where id=#{id} limit 1")
+	public UseResidentPo findId(@Param("id") String id);
+
+
 
 	@Select("select r.*,u.communityId from use_resident r left join use_community_resident u on u.residentId = r.id  where r.wxId=#{wxId} limit 1")
 	public UseResidentVo findWxIds(@Param("wxId") String wxId);

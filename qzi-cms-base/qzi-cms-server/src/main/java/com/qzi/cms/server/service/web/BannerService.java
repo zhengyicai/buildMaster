@@ -25,7 +25,7 @@ public interface BannerService {
 	 * @return 集合
 	 * @throws Exception 
 	 */
-	public List<UseBannerVo> findAll(Paging paging) throws Exception;
+	public List<UseBannerVo> findAll(Paging paging,String communityId) throws Exception;
 
 	/**
 	 * 新增
@@ -52,5 +52,5 @@ public interface BannerService {
 	 * 查找总记录数
 	 * @return
 	 */
-	public long findCount();
+	public long findCount(String communityId);
 }
