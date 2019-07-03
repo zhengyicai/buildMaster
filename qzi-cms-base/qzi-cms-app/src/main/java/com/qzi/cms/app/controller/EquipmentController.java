@@ -611,7 +611,7 @@ public class EquipmentController {
         RespBody respBody = new RespBody();
 
         try {
-            respBody.add(RespCodeEnum.SUCCESS.getCode(), "获取开锁列表成功",useResidentUnlockRecordMapper.findAll(wxId));
+            respBody.add(RespCodeEnum.SUCCESS.getCode(), "获取开锁列表成功",useUnlockEquRecordMapper.findAll1(wxId));
         } catch (Exception ex) {
             respBody.add(RespCodeEnum.ERROR.getCode(), "获取开锁列表失败");
             LogUtils.error("获取开锁列表失败！",ex);
@@ -695,6 +695,19 @@ public class EquipmentController {
                 String url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+redisService.getString("access_token");
                 System.out.println("test"+ JSON.toJSONString(wx)) ;
                 HttpClientManager.postUrlData(url,JSON.toJSONString(wx));
+
+
+
+                UseUnlockEquRecordPo useUnlockEquRecordPo = new UseUnlockEquRecordPo();
+                useUnlockEquRecordPo.setId(ToolUtils.getUUID());
+                useUnlockEquRecordPo.setEquipmentNo(vo.getEquNo());
+                useUnlockEquRecordPo.setWxId(list.get(i).getWxId());
+                useUnlockEquRecordPo.setCreateTime(new Date());
+                useUnlockEquRecordPo.setState("10");
+                useUnlockEquRecordPo.setImgUrl("");
+                useUnlockEquRecordPo.setRemark("");
+                useUnlockEquRecordMapper.insert(useUnlockEquRecordPo);
+
             }
         }
 

@@ -46,6 +46,11 @@ public interface UseUnlockEquRecordMapper extends BaseMapper<UseUnlockEquRecordP
     public Integer findcound( @Param("communityId") String communityId);
 
 
+    @Select("select * from use_unlock_equRecord where wxid = #{wxId}")
+    public List<UseUnlockEquRecordPo> findAll1(@Param("wxId") String wxId);
+
+
+
 
 
 
