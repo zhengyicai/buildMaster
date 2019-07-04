@@ -44,9 +44,9 @@ public class WxController {
 
     private String appid = "wx7e2cbe88acd91b11";
     private String appsecret = "addb33ee9e17d40c22586c44d034d78a";
-    private String url = "http://youmowx.zhcloudshare.com"; //回调接口
-    private String pageUrl = "http://youmo.zhcloudshare.com/menzha/userAdd.html";  //返回页面
-    private String authPageUrl = "http://youmo.zhcloudshare.com/menzha/equipmentList.html";  //访客授权页面
+    private String url = "http://youmo.zhcloudshare.com"; //回调接口
+    private String pageUrl = "http://youmohome.zhcloudshare.com/menzha/userAdd.html";  //返回页面
+    private String authPageUrl = "http://youmohome.zhcloudshare.com/menzha/home.html";  //访客授权页面
 
 
     @Resource

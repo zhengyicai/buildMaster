@@ -809,8 +809,8 @@ public class EquipmentController {
 
                         //设置数据
                          String mess =      new String(buf,0,datagramPacket.getLength(),"gbk");
-                         redisService.putString(mess.substring(0,8),mess.substring(8,mess.length()-1) , 7000).equalsIgnoreCase("ok");
 
+                         redisService.putString(mess.substring(0,8),mess.substring(9,mess.length()) , 72000).equalsIgnoreCase("ok");
                         //doData(datagramPacket.getData());
                         //UseEquipmentPortPo portPo = new UseEquipmentPortPo();
                         useEquipmentPortMapper.update(String.valueOf(datagramPacket.getAddress()).substring(1,String.valueOf(datagramPacket.getAddress()).length()),datagramPacket.getPort()+"",new String(buf,0,datagramPacket.getLength()));
@@ -900,9 +900,13 @@ public class EquipmentController {
 
 
     @GetMapping("/getRedis")
-   public RespBody getRedis(){
+   public RespBody getRedis(String message){
        RespBody respBody = new RespBody();
-       redisService.putString("00000301","dfdf,正文,温度,水压,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1" , 7000).equalsIgnoreCase("ok");
+
+        String mess =   message;
+        //"00000301,dfdf,正文,温度,水压,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
+        redisService.putString(mess.substring(0,8),mess.substring(9,mess.length()) , 72000).equalsIgnoreCase("ok");
+       //redisService.putString("00000301","dfdf,正文,温度,水压,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1" , 7000).equalsIgnoreCase("ok");
 
        return respBody;
    }
@@ -1091,7 +1095,7 @@ public class EquipmentController {
           RespBody respBody = new RespBody();
         UseResidentPo po =   useResidentMapper.findWxId(wxId);
           if(po!=null){
-              respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找用户设备数据成功",  useResidentEquipmentMapper.selectResidnet(po.getId()));
+              respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找用户设备数据成功",  useResidentEquipmentMapper.selectResidnet1(po.getId()));
 
           }else{
               respBody.add(RespCodeEnum.ERROR.getCode(), "查找用户设备数据失败");
