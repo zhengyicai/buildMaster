@@ -686,8 +686,8 @@ public class EquipmentController {
                 WxMessage wx = new WxMessage();
 
                 WxContent content = new WxContent();
-                content.setContent("<a data-miniprogram-appid='"+miniappid+"' data-miniprogram-path='pages/webrtc-room/room/room?roomID="+ vo.getEquNo()+"' href='http://www.qq.com'>"+ vo.getEquNo()+"</a>");
-
+                content.setContent("<a data-miniprogram-appid='"+miniappid+"' data-miniprogram-path='pages/webrtc-room/oneroom/oneroom?roomId="+ vo.getEquNo()+"' href='http://www.qq.com'>"+ vo.getEquNo()+"</a>");
+                System.out.print("<a data-miniprogram-appid='"+miniappid+"' data-miniprogram-path='pages/webrtc-room/oneroom/oneroom?roomId="+ vo.getEquNo()+"' href='http://www.qq.com'>"+ vo.getEquNo()+"</a>");
                 wx.setTouser(list.get(i).getWxId());
                 wx.setMsgtype("text");
                 wx.setText(content);
@@ -1047,12 +1047,29 @@ public class EquipmentController {
         if(po!=null){
            UseCommunityResidentPo useCommunityResidentPo =    useCommunityResidentMapper.existsCRResident(po.getId());
            if(useCommunityResidentPo!=null){
-               respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找小区数据成功", useEquipmentMapper.findCommunity(useCommunityResidentPo.getCommunityId()));
+
+               respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找小区数据成功",useResidentEquipmentMapper .selectResidnet(useCommunityResidentPo.getCommunityId()));
            }
         }
 
         return respBody;
     }
+
+
+    @GetMapping("/getCommunityList1")
+        public RespBody getCommunityList1(String wxId){
+            RespBody respBody = new RespBody();
+
+            UseResidentPo po =   useResidentMapper.findWxId(wxId);
+            if(po!=null){
+               UseCommunityResidentPo useCommunityResidentPo =    useCommunityResidentMapper.existsCRResident(po.getId());
+               if(useCommunityResidentPo!=null){
+                   respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找小区数据成功", useEquipmentMapper.findCommunity(useCommunityResidentPo.getCommunityId()));
+               }
+            }
+
+            return respBody;
+        }
 
 
      @PostMapping("/saveCommunityList")

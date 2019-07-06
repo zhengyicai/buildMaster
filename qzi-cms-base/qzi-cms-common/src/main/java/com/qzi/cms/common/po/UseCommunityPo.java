@@ -104,6 +104,25 @@ public class UseCommunityPo {
 	 */
 	private String sysWorkId;
 
+	private String width1;
+	private String height1;
+
+	public String getWidth1() {
+		return width1;
+	}
+
+	public void setWidth1(String width1) {
+		this.width1 = width1;
+	}
+
+	public String getHeight1() {
+		return height1;
+	}
+
+	public void setHeight1(String height1) {
+		this.height1 = height1;
+	}
+
 	public Integer getCode() {
 		return code;
 	}
