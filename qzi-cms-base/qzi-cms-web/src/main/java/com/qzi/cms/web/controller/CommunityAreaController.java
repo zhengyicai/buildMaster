@@ -32,7 +32,7 @@ import com.qzi.cms.common.vo.UseCommunityVo;
 import com.qzi.cms.server.service.web.CommunityService;
 
 /**
- * 住宅小区控制器
+ * 项目控制器
  * @author qsy
  * @version v1.0
  * @date 2017年6月28日
@@ -56,13 +56,13 @@ public class CommunityAreaController {
 		RespBody respBody = new RespBody();
 		try {
 			//保存返回数据
-			respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有住宅小区数据成功", communityService.findAll(paging));
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有项目数据成功", communityService.findAll(paging));
 			//保存分页对象
 			paging.setTotalCount(communityService.findCount());
 			respBody.setPage(paging);
 		} catch (Exception ex) {
-			respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有住宅小区数据失败");
-			LogUtils.error("查找所有住宅小区数据失败！",ex);
+			respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有项目数据失败");
+			LogUtils.error("查找所有项目数据失败！",ex);
 		}
 		return respBody;
 	}
@@ -82,15 +82,15 @@ public class CommunityAreaController {
 	
 	
 	@PostMapping("/add")
-	@SystemControllerLog(description="新增住宅小区")
+	@SystemControllerLog(description="新增项目")
 	public RespBody add(@RequestBody UseCommunityVo communityVo){
 		RespBody respBody = new RespBody();
 		try {
 			communityService.add(communityVo);
-			respBody.add(RespCodeEnum.SUCCESS.getCode(), "住宅小区保存成功");
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "项目保存成功");
 		} catch (Exception ex) {
-			respBody.add(RespCodeEnum.ERROR.getCode(), "住宅小区保存失败");
-			LogUtils.error("住宅小区保存失败！",ex);
+			respBody.add(RespCodeEnum.ERROR.getCode(), "项目保存失败");
+			LogUtils.error("项目保存失败！",ex);
 		}
 		return respBody;
 	}
@@ -101,30 +101,30 @@ public class CommunityAreaController {
 	 * @return
 	 */
 	@PostMapping("/workAdd")
-	@SystemControllerLog(description="新增住宅小区")
+	@SystemControllerLog(description="新增项目")
 	public RespBody workAdd(@RequestBody UseCommunityVo communityVo){
 		RespBody respBody = new RespBody();
 		try {
 			communityService.wordAdd(communityVo);
-			respBody.add(RespCodeEnum.SUCCESS.getCode(), "住宅小区保存成功");
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "项目保存成功");
 		} catch (Exception ex) {
-			respBody.add(RespCodeEnum.ERROR.getCode(), "住宅小区保存失败");
-			LogUtils.error("住宅小区保存失败！",ex);
+			respBody.add(RespCodeEnum.ERROR.getCode(), "项目保存失败");
+			LogUtils.error("项目保存失败！",ex);
 		}
 		return respBody;
 	}
 
 	
 	@PostMapping("/update")
-	@SystemControllerLog(description="修改住宅小区")
+	@SystemControllerLog(description="修改项目")
 	public RespBody update(@RequestBody UseCommunityVo communityVo){
 		RespBody respBody = new RespBody();
 		try {
 			communityService.update(communityVo);
-			respBody.add(RespCodeEnum.SUCCESS.getCode(), "住宅小区保存成功");
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "项目保存成功");
 		} catch (Exception ex) {
-			respBody.add(RespCodeEnum.ERROR.getCode(), "住宅小区保存失败");
-			LogUtils.error("住宅小区保存失败！",ex);
+			respBody.add(RespCodeEnum.ERROR.getCode(), "项目保存失败");
+			LogUtils.error("项目保存失败！",ex);
 		}
 		return respBody;
 	}
@@ -143,15 +143,15 @@ public class CommunityAreaController {
 	}
 	
 	@PostMapping("/saveAdmin")
-	@SystemControllerLog(description="保存住宅小区管理员关系")
+	@SystemControllerLog(description="保存项目管理员关系")
 	public RespBody add(@RequestBody AdminVo adminVo){
 		RespBody respBody = new RespBody();
 		try {
 			communityService.add(adminVo);
-			respBody.add(RespCodeEnum.SUCCESS.getCode(), "保存住宅小区管理员关系成功");
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "保存项目管理员关系成功");
 		} catch (Exception ex) {
-			respBody.add(RespCodeEnum.ERROR.getCode(), "保存住宅小区管理员关系失败");
-			LogUtils.error("保存住宅小区管理员关系失败！",ex);
+			respBody.add(RespCodeEnum.ERROR.getCode(), "保存项目管理员关系失败");
+			LogUtils.error("保存项目管理员关系失败！",ex);
 		}
 		return respBody;
 	}

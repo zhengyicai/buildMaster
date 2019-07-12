@@ -78,8 +78,11 @@ public interface UseCommunityMapper extends BaseMapper<UseCommunityPo>{
 	 * 微信获取小区数据
 	 */
 
-	@Select("select id,communityName,state from use_community")
+	@Select("select id,communityName,state from use_community where state='10'" )
 	public  List<UseCommunityPo> wxFindAll();
+
+	@Select("select * from use_community where state='10'" )
+	public  List<UseCommunityPo> FindAll1();
 
 
 	@Select("select id,communityName,communityNo,province,provinceCode,city,cityCode,area,areaCode,address from use_community where state = '10'")

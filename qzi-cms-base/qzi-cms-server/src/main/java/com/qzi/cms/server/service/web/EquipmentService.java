@@ -51,6 +51,8 @@ public interface EquipmentService {
 	 */
 	public List<UseEquipmentVo> findAll(Paging paging, String criteria) throws Exception;
 
+	public List<UseEquipmentVo> findCommunityIdAll(Paging paging, String criteria,String communityId) throws Exception;
+
 	/**
 	 * 总记录数据，适用于分页
 	 * @param criteria 查询条件
@@ -58,6 +60,7 @@ public interface EquipmentService {
 	 * @throws Exception 
 	 */
 	public long findCount(String criteria) throws Exception;
+	public long findCommunityIdCount(String criteria,String communityId) throws Exception;
 
 	/**
 	 * 新增设备

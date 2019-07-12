@@ -116,13 +116,13 @@ public class ResidentController {
 	 */
 
 	@GetMapping("/residentList")
-	public RespBody residentList(Paging paging,String criteria){
+	public RespBody residentList(Paging paging,String criteria,String communityId){
 		RespBody respBody = new RespBody();
 		try {
 			//保存返回数据
-			respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有住户数据成功", residentService.residentList(paging,criteria));
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有住户数据成功", residentService.residentUserList(paging,criteria,communityId));
 			//保存分页对象
-			paging.setTotalCount(residentService.residentCount(criteria));
+			paging.setTotalCount(residentService.residentUserCount(criteria,communityId));
 			respBody.setPage(paging);
 		} catch (Exception ex) {
 			respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有住户数据失败");

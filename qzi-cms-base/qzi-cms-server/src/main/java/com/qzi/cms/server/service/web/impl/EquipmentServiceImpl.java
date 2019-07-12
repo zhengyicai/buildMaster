@@ -97,10 +97,21 @@ public class EquipmentServiceImpl implements EquipmentService {
 	}
 
 	@Override
+	public List<UseEquipmentVo> findCommunityIdAll(Paging paging, String criteria, String communityId) throws Exception {
+		RowBounds rwoBounds = new RowBounds(paging.getPageNumber(),paging.getPageSize());
+		return equipmentMapper.findCommunityIdAll(rwoBounds,criteria,communityId);
+	}
+
+	@Override
 	public long findCount(String criteria) throws Exception {
 		//读取用户信息
 		SysUserVo userVo = commonService.findUser();
 		return equipmentMapper.findCount(criteria,userVo.getId());
+	}
+
+	@Override
+	public long findCommunityIdCount(String criteria, String communityId) throws Exception {
+		return equipmentMapper.findCommunityIdCount(criteria,communityId);
 	}
 
 	@Override

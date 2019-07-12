@@ -13,9 +13,11 @@ import com.qzi.cms.common.po.UseCommunityPo;
 import com.qzi.cms.common.po.UseEquipmentNowStatePo;
 import com.qzi.cms.common.po.UseEquipmentPortPo;
 import com.qzi.cms.common.po.UseResidentPo;
+import com.qzi.cms.common.service.RedisService;
 import com.qzi.cms.common.util.ToolUtils;
 import com.qzi.cms.common.vo.CommunityAdminVo;
 import com.qzi.cms.common.vo.UseLockRecordVo;
+import com.qzi.cms.server.mapper.UseCommunityMapper;
 import com.qzi.cms.server.mapper.UseEquipmentNowStateMapper;
 import com.qzi.cms.server.mapper.UseEquipmentPortMapper;
 import com.qzi.cms.server.mapper.UseResidentMapper;
@@ -55,12 +57,19 @@ public class EquipmentController {
 	@Resource
 	private CommunityService communityService;
 
+	@Resource
+	private UseCommunityMapper useCommunityMapper;
+
 
 	@Resource
 	private WebLockRecordService webLockRecordService;
 
 	@Resource
 	private UseResidentMapper useResidentMapper;
+
+
+	@Resource
+	private RedisService redisService;
 
 
 
@@ -125,8 +134,8 @@ public class EquipmentController {
 
 		  List<UseEquipmentVo> list =  equipmentService.findAll(paging,criteria);
 		  for(UseEquipmentVo vo:list){
-			  if(vo.getNowDate()!=null){
-				  if((new Date().getTime()-vo.getNowDate().getTime())/1000>60){
+			  if(vo.getLastTime()!=null){
+				  if(vo.getLastTime()>60){
 				  				  vo.setNowDateStatus("离线");
 				  			  }else{
 				  				  vo.setNowDateStatus("在线");
@@ -137,6 +146,61 @@ public class EquipmentController {
 			respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有设备数据成功", list);
 			//保存分页对象
 			paging.setTotalCount(equipmentService.findCount(criteria));
+			respBody.setPage(paging);
+		} catch (Exception ex) {
+			respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有设备数据失败");
+			LogUtils.error("查找所有设备数据失败！",ex);
+		}
+		return respBody;
+	}
+
+
+
+
+
+
+	@GetMapping("/findCommunityAll")
+	public RespBody findCommunityAll(){
+		RespBody respBody = new RespBody();
+		try {
+
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有设备数据成功", useCommunityMapper.FindAll1());
+		} catch (Exception ex) {
+			respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有设备数据失败");
+			LogUtils.error("查找所有设备数据失败！",ex);
+		}
+		return respBody;
+	}
+
+	@GetMapping("/getRedisEqu")
+	public RespBody getRedisEqu(String equNo){
+		RespBody respBody = new RespBody();
+		respBody.add(RespCodeEnum.SUCCESS.getCode(), "获取redis成功",redisService.getString(equNo));
+
+		return respBody;
+	}
+
+
+	@GetMapping("/findCommunityIdAll")
+	public RespBody findCommunityIdAll(Paging paging,String criteria,String communityId){
+		RespBody respBody = new RespBody();
+		try {
+			//保存返回数据
+
+			List<UseEquipmentVo> list =  equipmentService.findCommunityIdAll(paging,criteria,communityId);
+			for(UseEquipmentVo vo:list){
+				if(vo.getLastTime()!=null){
+					if(vo.getLastTime()>60){
+						vo.setNowDateStatus("离线");
+					}else{
+						vo.setNowDateStatus("在线");
+					}
+				}
+			}
+
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有设备数据成功", list);
+			//保存分页对象
+			paging.setTotalCount(equipmentService.findCommunityIdCount(criteria,communityId));
 			respBody.setPage(paging);
 		} catch (Exception ex) {
 			respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有设备数据失败");

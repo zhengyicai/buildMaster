@@ -54,6 +54,38 @@
 	</select>
 
 
+
+
+	<select id="residentUserList" resultType="UseResidentVo" parameterType="String">
+		SELECT ur.*  from use_resident ur inner join use_community_resident r on r.residentId = ur.id
+		<where>
+			1=1
+			<if test="criteria != null and criteria !=''">
+				<bind name="pun" value="'%'+_parameter.criteria+'%'"/>
+				and (ur.name like #{pun} or ur.mobile like #{pun})
+			</if>
+			<if test="communityId != null and communityId !=''">
+				and r.communityId = #{communityId}
+			</if>
+		</where>
+		order by ur.createTime desc
+	</select>
+
+	<select id="residentUserCount" resultType="long" parameterType="String">
+		SELECT count(1) from use_resident ur inner join use_community_resident r on r.residentId = ur.id
+		<where>
+			1=1
+			<if test="criteria != null and criteria !=''">
+				<bind name="pun" value="'%'+_parameter.criteria+'%'"/>
+				and (ur.name like #{pun} or ur.mobile like #{pun})
+			</if>
+			<if test="communityId != null and communityId !=''">
+				and r.communityId = #{communityId}
+			</if>
+		</where>
+	</select>
+
+
 	<!-- 条件分页查询   授权管理-->
 	<select id="authList" resultType="UseResidentRoomVo" parameterType="String">
 		select uroom.*, usr.name ,usr.mobile, use_community.communityName,use_building.buildingName,use_unit.unitName,room.roomName  from use_resident_room uroom left join use_resident usr on uroom.residentId = usr.id LEFT JOIN use_room room  on uroom.roomId = room.id left join use_building on room.buildingId = use_building.id

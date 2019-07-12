@@ -63,7 +63,7 @@ public interface UseResidentEquipmentMapper extends BaseMapper<UseResidentEquipm
 	@Select("select e.*,r.state as equCardState from use_equipment e left join use_resident_equipment r on  e.equipmentId = r.equipmentId   where r.state = '10' and r.residentId =#{residentId}")
 	public List<UseEquipmentVo> selectResidnet(@Param("residentId") String residentId);
 
-	@Select("select e.*,r.state as equCardState from use_equipment e left join use_resident_equipment r on  e.equipmentId = r.equipmentId   where  r.residentId =#{residentId}")
+	@Select("select e.*,TIMESTAMPDIFF(SECOND,p.createTime,now()) as lastTime,r.state as equCardState from use_equipment e left join use_resident_equipment r on  e.equipmentId = r.equipmentId  left join use_equipment_port p on e.equNo = p.equipmentNo   where  r.residentId =#{residentId}")
 	public List<UseEquipmentVo> selectResidnet1(@Param("residentId") String residentId);
 
 

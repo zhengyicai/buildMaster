@@ -52,6 +52,8 @@ public interface UseResidentMapper  extends BaseMapper<UseResidentPo>{
 	 */
 	public List<UseResidentVo> residentList(RowBounds rwoBounds,@Param("criteria") String criteria);
 
+	public List<UseResidentVo> residentUserList(RowBounds rwoBounds,@Param("criteria") String criteria,@Param("communityId") String communityId);
+
 
 	/**
 	 * @param criteria
@@ -59,6 +61,8 @@ public interface UseResidentMapper  extends BaseMapper<UseResidentPo>{
 	 * @return
 	 */
 	public long residentCount(@Param("criteria") String criteria);
+
+	public long residentUserCount(@Param("criteria") String criteria,@Param("communityId") String communityId);
 
 	/**
 	 * @param rwoBounds

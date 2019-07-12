@@ -52,6 +52,8 @@ public interface ResidentService {
 	 */
 	public List<UseResidentVo> residentList(Paging paging, String criteria) throws Exception;
 
+	public List<UseResidentVo> residentUserList(Paging paging, String criteria,String communityId) throws Exception;
+
 	/**
 	 * 总记录数  2018-11-20  1.0.0
 	 * @param criteria 条件
@@ -59,6 +61,8 @@ public interface ResidentService {
 	 * @throws Exception
 	 */
 	public long residentCount(String criteria) throws Exception;
+
+	public long residentUserCount(String criteria,String communityId) throws Exception;
 
 	/**
 	 * 新增住户

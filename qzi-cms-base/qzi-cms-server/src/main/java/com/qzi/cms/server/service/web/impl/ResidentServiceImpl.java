@@ -89,8 +89,22 @@ public class ResidentServiceImpl implements ResidentService {
 	}
 
 	@Override
+	public List<UseResidentVo> residentUserList(Paging paging, String criteria, String communityId) throws Exception {
+		//读取用户信息
+		SysUserVo userVo = commonService.findUser();
+		//分页对象
+		RowBounds rwoBounds = new RowBounds(paging.getPageNumber(),paging.getPageSize());
+		return residentMapper.residentUserList(rwoBounds,criteria,communityId);
+	}
+
+	@Override
 	public long residentCount(String criteria) throws Exception {
 		return residentMapper.residentCount(criteria);
+	}
+
+	@Override
+	public long residentUserCount(String criteria, String communityId) throws Exception {
+		return residentMapper.residentUserCount(criteria,communityId);
 	}
 
 

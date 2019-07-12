@@ -681,13 +681,24 @@ public class EquipmentController {
         RespBody respBody = new RespBody();
 
         List<UseResidentVo> list =   useResidentEquipmentMapper.findResidentId( vo.getEquNo());
+
+        UseEquipmentPo use =   useEquipmentMapper.findEquNo(vo.getEquNo());
+        String str = "";
+        if(use!=null){
+            UseCommunityPo useCommunityPo =   useCommunityMapper.findOne(use.getCommunityId());
+          if(useCommunityPo!=null){
+              str = useCommunityPo.getCommunityName();
+          }
+        }
+
+
         if(list.size()>0){
             for(int i = 0;i<list.size();i++){
                 WxMessage wx = new WxMessage();
 
                 WxContent content = new WxContent();
-                content.setContent("<a data-miniprogram-appid='"+miniappid+"' data-miniprogram-path='pages/webrtc-room/oneroom/oneroom?roomId="+ vo.getEquNo()+"' href='http://www.qq.com'>"+ vo.getEquNo()+"</a>");
-                System.out.print("<a data-miniprogram-appid='"+miniappid+"' data-miniprogram-path='pages/webrtc-room/oneroom/oneroom?roomId="+ vo.getEquNo()+"' href='http://www.qq.com'>"+ vo.getEquNo()+"</a>");
+                content.setContent("<a data-miniprogram-appid='"+miniappid+"' data-miniprogram-path='pages/webrtc-room/oneroom/oneroom?roomId="+ vo.getEquNo()+"' href='http://www.qq.com'>"+ str+vo.getEquNo().substring(6,8)+" 号机有新的报警呼叫，点击进入视频通话</a>");
+                System.out.print("<a data-miniprogram-appid='"+miniappid+"' data-miniprogram-path='pages/webrtc-room/oneroom/oneroom?roomId="+ vo.getEquNo()+"' href='http://www.qq.com'>"+ str+vo.getEquNo().substring(6,8)+" 号机有新的报警呼叫，点击进入视频通话</a>");
                 wx.setTouser(list.get(i).getWxId());
                 wx.setMsgtype("text");
                 wx.setText(content);
@@ -1048,7 +1059,7 @@ public class EquipmentController {
            UseCommunityResidentPo useCommunityResidentPo =    useCommunityResidentMapper.existsCRResident(po.getId());
            if(useCommunityResidentPo!=null){
 
-               respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找小区数据成功",useResidentEquipmentMapper .selectResidnet(useCommunityResidentPo.getCommunityId()));
+               respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找小区数据成功",useResidentEquipmentMapper.selectResidnet(useCommunityResidentPo.getResidentId()));
            }
         }
 

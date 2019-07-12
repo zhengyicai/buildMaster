@@ -33,12 +33,19 @@ public interface UseEquipmentMapper extends BaseMapper<UseEquipmentPo>{
 	 */
 	public List<UseEquipmentVo> findAll(RowBounds rwoBounds,@Param("criteria") String criteria,@Param("uid") String userId);
 
+
+
+	public List<UseEquipmentVo> findCommunityIdAll(RowBounds rwoBounds,@Param("criteria") String criteria,@Param("communityId") String communityId);
+
+
 	/**
 	 * @param criteria
 	 * @param id
 	 * @return
 	 */
 	public long findCount(@Param("criteria") String criteria,@Param("uid") String userId);
+
+	public long findCommunityIdCount(@Param("criteria") String criteria,@Param("communityId") String communityId);
 
 	/**
 	 * @param communityId
