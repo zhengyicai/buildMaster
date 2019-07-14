@@ -51,6 +51,17 @@ public class UseBannerVo {
 	private Date stopTime;
 	private String communityId;
 
+	private Date updateTime;
+
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
 	public String getCommunityId() {
 		return communityId;
 	}

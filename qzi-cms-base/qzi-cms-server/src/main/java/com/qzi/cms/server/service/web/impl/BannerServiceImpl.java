@@ -53,6 +53,7 @@ public class BannerServiceImpl implements BannerService {
 		UseBannerPo bannerPo = YBBeanUtils.copyProperties(bannerVo, UseBannerPo.class);
 		bannerPo.setId(ToolUtils.getUUID());
 		bannerPo.setCreateTime(new Date());
+		bannerPo.setUpdateTime(new Date());
 		bannerPo.setImg(bannerVo.getImg());
 		bannerMapper.insert(bannerPo);
 	}
@@ -61,7 +62,9 @@ public class BannerServiceImpl implements BannerService {
 	@Transactional(rollbackFor=Exception.class)
 	public void update(UseBannerVo bannerVo) throws Exception {
 
+		bannerVo.setUpdateTime(new Date());
 		UseBannerPo bannerPo = YBBeanUtils.copyProperties(bannerVo, UseBannerPo.class);
+
 		bannerMapper.updateByPrimaryKey(bannerPo);
 	}
 

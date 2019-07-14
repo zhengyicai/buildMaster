@@ -818,40 +818,71 @@ public class EquipmentController {
                         System.out.println("接收端接收到的数据："+datagramPacket.getData()); // getLength() 获取数据包存储了几个字节。
                         System.out.println("receive阻塞了我，哈哈"+datagramPacket.getAddress()+":"+datagramPacket.getPort());
 
+
+
+
+
+
+
+
                         //设置数据
                          String mess =      new String(buf,0,datagramPacket.getLength(),"gbk");
 
-                         redisService.putString(mess.substring(0,8),mess.substring(9,mess.length()) , 72000).equalsIgnoreCase("ok");
-                        //doData(datagramPacket.getData());
-                        //UseEquipmentPortPo portPo = new UseEquipmentPortPo();
-                        useEquipmentPortMapper.update(String.valueOf(datagramPacket.getAddress()).substring(1,String.valueOf(datagramPacket.getAddress()).length()),datagramPacket.getPort()+"",new String(buf,0,datagramPacket.getLength()));
 
-                        UseEquipmentNowStatePo nowStatePo =   useEquipmentNowStateMapper.findOne(new String(buf,0,datagramPacket.getLength()));
-                        if(nowStatePo == null){
-                            respBody.add(RespCodeEnum.SUCCESS.getCode(), "error");
-                            byte[] bs = "error".getBytes();//要发的信息内容
-                            //UDPA与UDPB的ip均为本机ip，故设置不同的端口号
-                            InetAddress desIp = InetAddress.getByName(datagramPacket.getAddress().toString().substring(1,datagramPacket.getAddress().toString().length()));
+                         //10：判断已经接通，20：未接通
+                        if(mess.indexOf("startPlay")!=-1){
+                            redisService.putString(mess.substring(0,8)+"trtc","10",72000).equalsIgnoreCase("ok");
+                        }else if(mess.indexOf("stopPlay")!=-1){
+                            redisService.putString(mess.substring(0,8)+"trtc","20",72000).equalsIgnoreCase("ok");
 
-                            System.out.println("desIp"+desIp);
-                            DatagramPacket p = new DatagramPacket(bs, bs.length, desIp, datagramPacket.getPort());
-                            socket.send(p);
                         }else{
-                            respBody.add(RespCodeEnum.SUCCESS.getCode(), nowStatePo.getState());
 
-                            UseEquipmentNowStateVo nowStateVo = new UseEquipmentNowStateVo();
-                            nowStateVo.setEquipmentNo(nowStatePo.getEquipmentNo());
-                            nowStateVo.setState(nowStatePo.getState());
-                            nowStateVo.setCmd("heartack");
 
-                            byte[] bs = JSON.toJSONString(nowStateVo).getBytes();//要发的信息内容
-                            //UDPA与UDPB的ip均为本机ip，故设置不同的端口号
-                            InetAddress desIp = InetAddress.getByName(datagramPacket.getAddress().toString().substring(1,datagramPacket.getAddress().toString().length()));
+                            if(redisService.getString(mess.substring(0,8)+"trtc")!=null){
 
-                            System.out.println("desIp"+desIp);
-                            DatagramPacket p = new DatagramPacket(bs, bs.length, desIp, datagramPacket.getPort());
-                            socket.send(p);
+                            }else{
+                                redisService.putString(mess.substring(0,8)+"trtc","30",72000).equalsIgnoreCase("ok");
+                            }
+
+
+                         //   redisService.putString(mess.substring(0,8)+"trtc","20",72000).equalsIgnoreCase("ok");
+                            redisService.putString(mess.substring(0,8),mess.substring(9,mess.length()) , 72000).equalsIgnoreCase("ok");
+                            //doData(datagramPacket.getData());
+                            //UseEquipmentPortPo portPo = new UseEquipmentPortPo();
+                            useEquipmentPortMapper.update(String.valueOf(datagramPacket.getAddress()).substring(1,String.valueOf(datagramPacket.getAddress()).length()),datagramPacket.getPort()+"",mess.substring(0,8));
+
+                            UseEquipmentNowStatePo nowStatePo =   useEquipmentNowStateMapper.findOne(mess.substring(0,8));
+                            if(nowStatePo == null){
+                                respBody.add(RespCodeEnum.SUCCESS.getCode(), "error");
+                                byte[] bs = "error".getBytes();//要发的信息内容
+                                //UDPA与UDPB的ip均为本机ip，故设置不同的端口号
+                                InetAddress desIp = InetAddress.getByName(datagramPacket.getAddress().toString().substring(1,datagramPacket.getAddress().toString().length()));
+
+                                System.out.println("desIp"+desIp);
+                                DatagramPacket p = new DatagramPacket(bs, bs.length, desIp, datagramPacket.getPort());
+                                socket.send(p);
+                            }else{
+                                respBody.add(RespCodeEnum.SUCCESS.getCode(), nowStatePo.getState());
+
+                                UseEquipmentNowStateVo nowStateVo = new UseEquipmentNowStateVo();
+                                nowStateVo.setEquipmentNo(nowStatePo.getEquipmentNo());
+                                nowStateVo.setState(nowStatePo.getState());
+                                nowStateVo.setCmd("heartack");
+
+                                byte[] bs = JSON.toJSONString(nowStateVo).getBytes();//要发的信息内容
+                                //UDPA与UDPB的ip均为本机ip，故设置不同的端口号
+                                InetAddress desIp = InetAddress.getByName(datagramPacket.getAddress().toString().substring(1,datagramPacket.getAddress().toString().length()));
+
+                                System.out.println("desIp"+desIp);
+                                DatagramPacket p = new DatagramPacket(bs, bs.length, desIp, datagramPacket.getPort());
+                                socket.send(p);
+                            }
+
                         }
+
+
+
+
 
                         //关闭资源
                       //  socket.close();
@@ -916,7 +947,17 @@ public class EquipmentController {
 
         String mess =   message;
         //"00000301,dfdf,正文,温度,水压,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
-        redisService.putString(mess.substring(0,8),mess.substring(9,mess.length()) , 72000).equalsIgnoreCase("ok");
+       // redisService.putString(mess.substring(0,8),mess.substring(9,mess.length()) , 72000).equalsIgnoreCase("ok");
+
+
+        if(mess.indexOf("startPlay")!=-1){
+            redisService.putString("00000301trtc","10",72000).equalsIgnoreCase("ok");
+        }else if(mess.indexOf("stopPlay")!=-1){
+            redisService.putString("00000301trtc","20",72000).equalsIgnoreCase("ok");
+
+        }
+
+        //redisService.putString("00000301trtc","10",72000).equalsIgnoreCase("ok");
        //redisService.putString("00000301","dfdf,正文,温度,水压,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1" , 7000).equalsIgnoreCase("ok");
 
        return respBody;
@@ -925,7 +966,14 @@ public class EquipmentController {
     @GetMapping("/getRedisEqu")
     public RespBody getRedisEqu(String equNo){
         RespBody respBody = new RespBody();
-        respBody.add(RespCodeEnum.SUCCESS.getCode(), "获取redis成功",redisService.getString(equNo));
+
+
+        if(redisService.getString(equNo+"trtc")!=null){
+
+        }else{
+            redisService.putString(equNo+"trtc","30",72000).equalsIgnoreCase("ok");
+        }
+        respBody.add(RespCodeEnum.SUCCESS.getCode(), "获取redis成功",redisService.getString(equNo+"trtc"));
 
         return respBody;
     }
