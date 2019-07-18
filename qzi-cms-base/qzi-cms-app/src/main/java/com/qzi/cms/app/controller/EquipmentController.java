@@ -814,7 +814,7 @@ public class EquipmentController {
                     DatagramPacket datagramPacket = new DatagramPacket(buf, buf.length); // 1024
                         //调用udp的服务接收数据
                         socket.receive(datagramPacket); //receive是一个阻塞型的方法，没有接收到数据包之前会一直等待。 数据实际上就是存储到了byte的自己数组中了。
-                        System.out.println("接收端接收到的数据："+ new String(buf,0,datagramPacket.getLength(),"gbk")); // getLength() 获取数据包存储了几个字节。
+                        System.out.println("接收端接收到的数据："+ new String(buf,0,datagramPacket.getLength(),"UTF-8")); // getLength() 获取数据包存储了几个字节。
                         System.out.println("接收端接收到的数据："+datagramPacket.getData()); // getLength() 获取数据包存储了几个字节。
                         System.out.println("receive阻塞了我，哈哈"+datagramPacket.getAddress()+":"+datagramPacket.getPort());
 
@@ -826,7 +826,7 @@ public class EquipmentController {
 
 
                         //设置数据
-                         String mess =      new String(buf,0,datagramPacket.getLength(),"gbk");
+                         String mess =      new String(buf,0,datagramPacket.getLength(),"UTF-8");
 
 
                          //10：判断已经接通，20：未接通
@@ -949,7 +949,6 @@ public class EquipmentController {
         //"00000301,dfdf,正文,温度,水压,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
        // redisService.putString(mess.substring(0,8),mess.substring(9,mess.length()) , 72000).equalsIgnoreCase("ok");
 
-
         if(mess.indexOf("startPlay")!=-1){
             redisService.putString("00000301trtc","10",72000).equalsIgnoreCase("ok");
         }else if(mess.indexOf("stopPlay")!=-1){
@@ -974,6 +973,15 @@ public class EquipmentController {
             redisService.putString(equNo+"trtc","30",72000).equalsIgnoreCase("ok");
         }
         respBody.add(RespCodeEnum.SUCCESS.getCode(), "获取redis成功",redisService.getString(equNo+"trtc"));
+
+        return respBody;
+    }
+
+
+    @GetMapping("/getRedisEqu1")
+    public RespBody getRedisEqu1(String equNo){
+        RespBody respBody = new RespBody();
+        respBody.add(RespCodeEnum.SUCCESS.getCode(), "获取redis成功",redisService.getString(equNo));
 
         return respBody;
     }
