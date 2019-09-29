@@ -49,10 +49,19 @@ public class UseBannerVo {
 	private Integer startCount;
 	private Integer stopCount;
 	private Date stopTime;
+
+	private Date startTime;
 	private String communityId;
 
 	private Date updateTime;
 
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
 
 	public Date getUpdateTime() {
 		return updateTime;

@@ -535,8 +535,18 @@ public class EquipmentController {
         UseEquipmentPortPo  portPo =   useEquipmentPortMapper.findOne(po.getEquipmentNo());
 
 
+
+
         UseResidentVo useResidentVo = new UseResidentVo();
-        useResidentVo.setCmd("startPlay");
+
+        if("0".equals(po.getId())){
+            useResidentVo.setCmd("startPlay0");
+        }else{
+            useResidentVo.setCmd("startPlay1");
+        }
+
+
+
         useResidentVo.setDeviceId(po.getEquipmentId());
 
         useResidentVo.setEquipmentNo(po.getEquipmentNo());
@@ -719,6 +729,12 @@ public class EquipmentController {
                 useUnlockEquRecordPo.setRemark("");
                 useUnlockEquRecordMapper.insert(useUnlockEquRecordPo);
 
+                try {
+                    Thread.sleep(200);     //设置暂停的时间，5000=5秒
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
 
@@ -829,6 +845,10 @@ public class EquipmentController {
                          String mess =      new String(buf,0,datagramPacket.getLength(),"UTF-8");
 
 
+
+
+
+
                          //10：判断已经接通，20：未接通
                         if(mess.indexOf("startPlay")!=-1){
                             redisService.putString(mess.substring(0,8)+"trtc","10",72000).equalsIgnoreCase("ok");
@@ -839,6 +859,9 @@ public class EquipmentController {
 
 
                             if(redisService.getString(mess.substring(0,8)+"trtc")!=null){
+                                if(mess.indexOf("videostop")!=-1){
+                                    redisService.putString(mess.substring(0,8)+"trtc","40",72000).equalsIgnoreCase("ok");
+                                }
 
                             }else{
                                 redisService.putString(mess.substring(0,8)+"trtc","30",72000).equalsIgnoreCase("ok");

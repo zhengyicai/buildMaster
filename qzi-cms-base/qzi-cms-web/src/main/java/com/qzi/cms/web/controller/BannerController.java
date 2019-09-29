@@ -58,10 +58,10 @@ public class BannerController {
 		RespBody respBody = new RespBody();
 		try {
 			bannerService.add(bannerVo);
-			respBody.add(RespCodeEnum.SUCCESS.getCode(), "手机广告轮播图保存成功");
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "保存成功");
 		} catch (Exception ex) {
-			respBody.add(RespCodeEnum.ERROR.getCode(), "手机广告轮播图保存失败");
-			LogUtils.error("手机广告轮播图保存失败！",ex);
+			respBody.add(RespCodeEnum.ERROR.getCode(), "保存失败");
+			LogUtils.error("保存失败！",ex);
 		}
 		return respBody;
 	}
@@ -72,10 +72,10 @@ public class BannerController {
 		RespBody respBody = new RespBody();
 		try {
 			bannerService.update(bannerVo);
-			respBody.add(RespCodeEnum.SUCCESS.getCode(), "手机广告轮播图保存成功");
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "保存成功");
 		} catch (Exception ex) {
-			respBody.add(RespCodeEnum.ERROR.getCode(), "手机广告轮播图保存失败");
-			LogUtils.error("手机广告轮播图保存失败！",ex);
+			respBody.add(RespCodeEnum.ERROR.getCode(), "保存失败");
+			LogUtils.error("保存失败！",ex);
 		}
 		return respBody;
 	}
@@ -86,10 +86,10 @@ public class BannerController {
 		RespBody respBody = new RespBody();
 		try {
 			bannerService.delete(bannerVo);
-			respBody.add(RespCodeEnum.SUCCESS.getCode(), "手机广告轮播图删除成功");
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "删除成功");
 		} catch (Exception ex) {
-			respBody.add(RespCodeEnum.ERROR.getCode(), "手机广告轮播图删除失败");
-			LogUtils.error("手机广告轮播图删除失败！",ex);
+			respBody.add(RespCodeEnum.ERROR.getCode(), "删除失败");
+			LogUtils.error("删除失败！",ex);
 		}
 		return respBody;
 	}

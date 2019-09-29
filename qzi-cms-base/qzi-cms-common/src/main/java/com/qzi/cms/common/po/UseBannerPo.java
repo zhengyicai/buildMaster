@@ -53,10 +53,18 @@ public class UseBannerPo {
 
 	private Integer startCount;
 	private Integer stopCount;
+	private Date startTime;
 	private Date stopTime;
 	private String communityId;
 	private Date updateTime;
 
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
 
 	public Date getUpdateTime() {
 		return updateTime;
