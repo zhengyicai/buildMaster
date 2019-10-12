@@ -13,10 +13,7 @@ import com.qzi.cms.common.util.HttpClientManager;
 import com.qzi.cms.common.util.LogUtils;
 import com.qzi.cms.common.util.SoundwavUtils;
 import com.qzi.cms.common.util.ToolUtils;
-import com.qzi.cms.common.vo.HomeUserCommunityVo;
-import com.qzi.cms.common.vo.UseEquipmentNowStateVo;
-import com.qzi.cms.common.vo.UseEquipmentVo;
-import com.qzi.cms.common.vo.UseResidentVo;
+import com.qzi.cms.common.vo.*;
 import com.qzi.cms.server.mapper.*;
 import com.qzi.cms.server.service.app.UseCommunityResidentService;
 import com.qzi.cms.server.service.web.EquipmentService;
@@ -119,6 +116,8 @@ public class EquipmentController {
     private   String appid = "wx7e2cbe88acd91b11";
     private   String miniappid = "wxedddefb4077ec474";
     private   String appsecret = "addb33ee9e17d40c22586c44d034d78a";
+
+    private String  templeId  = "zmacG4kZDqwcjhfEXhsHVZ4CCR7JqG3kIht4ytUuJ6c";
 
 
 
@@ -653,7 +652,7 @@ public class EquipmentController {
 
             JSONObject pa=JSONObject.parseObject(result);
             if(pa  !=null){
-                redisService.putString("access_token",pa.getString("access_token") , 7000).equalsIgnoreCase("ok");
+                redisService.putString("access_token",pa.getString("access_token") , 1200).equalsIgnoreCase("ok");
             }else{
 
             }
@@ -686,6 +685,67 @@ public class EquipmentController {
     }
 
 
+
+
+    public void testMessage1(WxObjectVo vo) throws Exception {
+
+            RespBody respBody = new RespBody();
+
+
+            WxTemplate template = new WxTemplate();
+            Miniprogram miniprogram = new Miniprogram();
+            miniprogram.setAppid(miniappid);
+            miniprogram.setPagepath(vo.getUrl());
+
+
+            template.setMiniprogram(miniprogram);
+            template.setTouser(vo.getWxId());
+            template.setTopcolor("#000000");
+
+            template.setTemplate_id(templeId);
+            Map<String,TemplateData> m = new HashMap<String,TemplateData>();
+            TemplateData first = new TemplateData();
+            first.setColor("#000000");
+            first.setValue(vo.getContent()+"有新的报警呼叫");
+            m.put("first", first);
+            TemplateData keyword1 = new TemplateData();
+            keyword1.setColor("#173177");
+            keyword1.setValue(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            m.put("keyword1", keyword1);
+            TemplateData keyword2 = new TemplateData();
+            keyword2.setColor("#173177");
+            keyword2.setValue("点击进入视频通话！");
+            m.put("keyword2", keyword2);
+
+            TemplateData remark = new TemplateData();
+            remark.setColor("#173177");
+            remark.setValue("");
+            m.put("remark",remark);
+
+            template.setData(m);
+
+            String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+redisService.getString("access_token");
+            System.out.println("test"+ JSON.toJSONString(template)) ;
+            HttpClientManager.postUrlData(url,JSON.toJSONString(template));
+
+
+
+           // return  respBody;
+        }
+
+
+    @PostMapping("/testMessage")
+    public RespBody testMessage(@RequestBody WxObjectVo vo) throws Exception {
+        RespBody respBody = new RespBody();
+        testMessage1(vo) ;
+        return respBody;
+
+
+       // return  respBody;
+    }
+
+
+
     @PostMapping("/sentMiniText")
     public RespBody sentMiniText(@RequestBody WxObjectVo vo) throws Exception {
         RespBody respBody = new RespBody();
@@ -707,16 +767,26 @@ public class EquipmentController {
                 WxMessage wx = new WxMessage();
 
                 WxContent content = new WxContent();
-                content.setContent("<a data-miniprogram-appid='"+miniappid+"' data-miniprogram-path='pages/webrtc-room/oneroom/oneroom?roomId="+ vo.getEquNo()+"' href='http://www.qq.com'>"+ str+vo.getEquNo().substring(6,8)+" 号机有新的报警呼叫，点击进入视频通话</a>");
-                System.out.print("<a data-miniprogram-appid='"+miniappid+"' data-miniprogram-path='pages/webrtc-room/oneroom/oneroom?roomId="+ vo.getEquNo()+"' href='http://www.qq.com'>"+ str+vo.getEquNo().substring(6,8)+" 号机有新的报警呼叫，点击进入视频通话</a>");
-                wx.setTouser(list.get(i).getWxId());
-                wx.setMsgtype("text");
-                wx.setText(content);
+                //content.setContent("<a data-miniprogram-appid='"+miniappid+"' data-miniprogram-path='pages/webrtc-room/oneroom/oneroom?roomId="+ vo.getEquNo()+"' href='http://www.qq.com'>"+ str+vo.getEquNo().substring(6,8)+" 号机有新的报警呼叫，点击进入视频通话</a>");
+                //System.out.print("<a data-miniprogram-appid='"+miniappid+"' data-miniprogram-path='pages/webrtc-room/oneroom/oneroom?roomId="+ vo.getEquNo()+"' href='http://www.qq.com'>"+ str+vo.getEquNo().substring(6,8)+" 号机有新的报警呼叫，点击进入视频通话</a>");
+//                content.setContent(""+ str+vo.getEquNo().substring(6,8)+" 号机有新的报警呼叫，点击进入视频通话");
+//                System.out.print(""+str+vo.getEquNo().substring(6,8)+" 号机有新的报警呼叫，点击进入视频通话");
+//                wx.setTouser(list.get(i).getWxId());
+//                wx.setMsgtype("text");
+//                wx.setText(content);
+//
+//                String url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+redisService.getString("access_token");
+//                System.out.println("test"+ JSON.toJSONString(wx)) ;
+//                HttpClientManager.postUrlData(url,JSON.toJSONString(wx));
 
-                String url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+redisService.getString("access_token");
-                System.out.println("test"+ JSON.toJSONString(wx)) ;
-                HttpClientManager.postUrlData(url,JSON.toJSONString(wx));
 
+                WxObjectVo wxObjectVo= new WxObjectVo();
+                wxObjectVo.setWxId(list.get(i).getWxId());
+                wxObjectVo.setUrl("pages/webrtc-room/oneroom/oneroom?roomId="+vo.getEquNo());
+                wxObjectVo.setContent(str+vo.getEquNo().substring(6,8));
+
+                //调用微信模板消息
+                testMessage1(wxObjectVo);
 
 
                 UseUnlockEquRecordPo useUnlockEquRecordPo = new UseUnlockEquRecordPo();
@@ -730,7 +800,7 @@ public class EquipmentController {
                 useUnlockEquRecordMapper.insert(useUnlockEquRecordPo);
 
                 try {
-                    Thread.sleep(200);     //设置暂停的时间，5000=5秒
+                    Thread.sleep(1000);     //设置暂停的时间，5000=5秒
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -805,7 +875,7 @@ public class EquipmentController {
           public void run() {
                 System.out.println("assess_token:"+getAccessToken()) ;
           }
-        }, 1000,7000000);// 设定指定的时间time,此处为2000毫秒
+        }, 1000,1200000);// 设定指定的时间time,此处为2000毫秒
 
 
 
